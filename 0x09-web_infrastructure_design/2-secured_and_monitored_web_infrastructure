@@ -1,0 +1,30 @@
+# task 2
+
+The link of the image is in the Readme file
+
+Flow Summary:
+
+ User requests www.foobar.com, resolved by DNS to the Load Balancer. HAproxy (with SSL) distributes encrypted traffic to Server 1 or 2. Firewalls on each server filter traffic. Nginx and Application Servers process requests, interacting with MySQL on Server 3. Monitoring clients on all servers collect data for analysis.
+
+Specifics About the Infrastructure
+Why Each Additional Element is Added:
+
+Firewalls: To secure each server by controlling incoming/outgoing traffic, preventing unauthorized access and attacks like DDoS.
+SSL Certificate: To encrypt traffic for www.foobar.com over HTTPS, protecting data integrity and user privacy.
+Monitoring Clients: To collect data on server health, performance, and issues, enabling proactive management and alerting.
+What Are Firewalls For?: Firewalls act as a barrier between servers and external networks, filtering traffic based on rules to block malicious activity and allow legitimate requests.
+
+Why Traffic is Served Over HTTPS?: HTTPS encrypts data between the user and server using SSL/TLS, preventing interception of sensitive information (e.g., passwords) and ensuring trust via certificate validation.
+
+What is Monitoring Used For?: Monitoring tracks server performance, uptime, errors, and security events, helping detect and resolve issues before they impact users.
+
+How Monitoring Tool Collects Data?: Monitoring clients (e.g., Sumo Logic agents) installed on each server collect logs, metrics (CPU, memory, traffic), and events, sending them to a central dashboard for analysis and alerting.
+
+What to Do to Monitor Web Server QPS (Queries Per Second)?: Configure the monitoring client to parse Nginx access logs or use a plugin to track HTTP request rates. Set up a dashboard or alert in the monitoring tool (e.g., Sumo Logic) to display QPS in real-time and notify if thresholds are exceeded.
+
+Issues with This Infrastructure
+Why Terminating SSL at Load Balancer Level is an Issue?: SSL termination at HAproxy means traffic between the load balancer and backend servers (Server 1 and 2) is unencrypted, exposing data to potential interception if the internal network is compromised. End-to-end encryption (SSL on backend servers) is preferable.
+
+Why Having Only One MySQL Server for Writes is an Issue?: The single Primary MySQL node is a SPOF for write operations. If it fails, writes stop, disrupting application functionality. A failover mechanism or multi-master setup is needed.
+
+Why Having Servers with All Same Components Might Be a Problem?: Servers 1 and 2 both host Nginx, Application Server, and Application Files, which can lead to resource contention and complexity in scaling specific components independently. Separating roles (e.g., dedicated web vs. app servers) could optimize performance and maintenance.

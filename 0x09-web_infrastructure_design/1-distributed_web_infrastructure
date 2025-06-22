@@ -1,0 +1,44 @@
+# Task 1
+
+The link of the image is in the Readme file
+Flow Explanation: 
+
+A user requests www.foobar.com, which DNS resolves to the Load Balancer’s IP. HAproxy distributes the request to Server 1 or Server 2 using a Round Robin algorithm. Nginx on the chosen server handles the request, passing dynamic content to the Application Server on the same machine. For database operations, the Application Server queries the MySQL Primary node on Server 3 for writes and can use the Replica for reads. The response is sent back through the same path to the user.
+
+1. Servers and Load Distribution
+Need: Prevent single points of failure and distribute workload for high availability.
+Change: Added two additional servers (Server 1 & 2 for web/app, Server 3 for database) and a load balancer (HAproxy) with a round-robin algorithm.
+Effect: Traffic is evenly distributed; both web/app servers can handle requests in parallel (Active-Active), improving redundancy and performance.
+2. Web and Application Layer
+Need: Ensure each server can independently process user requests and dynamic content.
+Change: Installed Nginx (web server) and application server on both Server 1 and Server 2; duplicated application files on both.
+Effect: Both servers can serve static and dynamic content independently, allowing for failover and parallel processing.
+3. Database Layer
+Need: Improve data reliability, scalability, and support more read operations.
+Change: Set up a MySQL Primary-Replica (Master-Slave) cluster on Server 3.
+Effect: Primary node handles all writes; Replica node handles reads, increasing read scalability and providing a backup for failover (though failover is not automatic).
+4. Load Balancer Algorithm
+Need: Evenly distribute incoming traffic to prevent overload.
+Change: Configured HAproxy with a round-robin algorithm.
+Effect: Requests are alternately sent to Server 1 and Server 2, balancing the load.
+5. Active-Active vs. Active-Passive
+Need: Maximize resource utilization and redundancy.
+Change: Implemented Active-Active setup via load balancer.
+Effect: Both servers handle traffic simultaneously, unlike Active-Passive where one is idle.
+6. Database Primary vs. Replica
+Need: Ensure data consistency and scalability.
+Change: Application sends writes to Primary, reads to Replica.
+Effect: Write consistency is maintained; read load is distributed, but Replica may have slight lag.
+Issues
+7. Single Points of Failure (SPOF)
+Need: Ensure continuous availability.
+Change: (Not addressed) Load balancer and database primary are still SPOFs.
+Effect: If either fails, the system may become unavailable or lose write capability.
+8. Security
+Need: Protect infrastructure from attacks and secure data.
+Change: (Not addressed) No firewall or HTTPS implemented.
+Effect: Servers are exposed to threats; data is unencrypted and vulnerable.
+9. Monitoring
+Need: Detect and respond to failures or performance issues.
+Change: (Not addressed) No monitoring tools in place.
+Effect: Failures or attacks may go unnoticed, risking downtime or data loss.
