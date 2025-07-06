@@ -13,4 +13,3 @@ This project configures a load-balanced web infrastructure using HAProxy and Ngi
 - Installs and configures HAProxy on the load balancer server.
 - HAProxy distributes requests to `web-01` and `web-02` using the `roundrobin` algorithm.
 - HAProxy is managed via an init script.
-
